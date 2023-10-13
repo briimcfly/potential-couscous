@@ -69,7 +69,7 @@ module.exports = {
     async updateThought(req,res){
         try{
             const thought = await Thought.findByIdAndUpdate(
-                req.params.userId,
+                req.params.thoughtId,
                 {$set: req.body},
                 {runValidators: true, new:true}
             )
@@ -88,6 +88,33 @@ module.exports = {
             //Error Handling
             console.log('Error Updating Thought', err);
             res.status(500).json({message: 'Error Updating Thought'});
+        }
+    },
+    //Delete a Thought 
+    async deleteThought(req,res) {
+        try{
+            const thought = await Thought.findByIdAndDelete(req.params.thoughtId);
+
+            //No Thought Found
+            if (!thought) {
+                console.log('No Thought with that ID');
+                return res.status(404).json({message: 'No Thought with that ID'});
+            }
+
+            //Remove Thought from User's Thoughts 
+            const user = await User.findOneAndUpdate(
+                {username: thought.username},
+                {$pull: {thoughts: thought._id}}
+            );
+
+            //Return Success
+            console.log('Thought Deleted Successfully');
+            res.status(200).json(thought);
+
+        } catch(err) {
+            //Error Handling
+            console.log('Error Deleting Thought', err);
+            res.status(500).json({message: 'Error Deleting Thought'});
         }
     }
 }

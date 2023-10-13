@@ -80,7 +80,7 @@ module.exports = {
     //Delete a Single User 
     async deleteUser(req,res) {
         try {
-            const user = await User.findByIdAndRemove(req.params.userId);
+            const user = await User.findByIdAndDelete(req.params.userId);
 
             //No User Found 
             if (!user) {
