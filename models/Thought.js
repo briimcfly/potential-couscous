@@ -1,23 +1,31 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-//Reaction Schema 
-const reactionSchema = new mongoose.Schema({
+//Reaction SubDoc Schema 
+const reactionSchema = new Schema({
     reactionId: {
-
+        type: Schema.Types.ObjectId,
+        //Default value to new ObjectID
+        default: () => new Schema.Types.ObjectId()
     },
     reactionBody: {
-
+        type: String,
+        required: true,
+        maxlength: 280
     },
     username: {
-
+        type: String,
+        required: true,
     },
     createdAt: {
-
+        type: Date,
+        default: Date.now,
+        get: (timestamp) => new Date(timestamp).toLocaleString()
     }
 });
 
 //Thought Schema 
-const thoughtSchema = new mongoose.Schema({
+const thoughtSchema = new Schema({
     thoughtText: {
         type: String,
         required: true,
