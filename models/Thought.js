@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const reactionSchema = require('./Reaction');
+
 //Thought Schema 
 const thoughtSchema = new mongoose.Schema({
     thoughtText: {
@@ -17,17 +19,26 @@ const thoughtSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    reactions: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Reaction'
-        }
-    ]
-})
+    //Imported Reaction Schema 
+    reactions: [reactionSchema]
+},
+{
+    //Include virtuals when converting to JSON
+    toJSON: {
+        virtuals: true,
+        getters: true
+    },
+    //Include virtuals when converting to Objects
+    toObject: {
+        virtuals: true,
+        getters: true
+    }
+});
 
-//Enable getters when documents are queried 
-thoughtSchema.set('toObject', {getters: true});
-thoughtSchema.set('toJSON', { getters: true});
+//reactionCount virtual 
+thoughtSchema.virtual('reactionCount').get(function() {
+    return this.reactions.length;
+});
 
 const Thought = mongoose.model('Thoughts', thoughtSchema);
 
