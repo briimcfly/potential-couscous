@@ -40,7 +40,7 @@ module.exports = {
     //Create New User
     async createUser(req,res) {
         try {
-            const user = await User.create(req,body);
+            const user = await User.create(req.body);
 
             //Return Success
             console.log('User Created Successfully')
@@ -63,6 +63,7 @@ module.exports = {
 
             //No User Found 
             if (!user) {
+                console.log('No User with that ID');
                 return res.status(404).json({message: 'No User with that ID'});
             }
 
@@ -83,6 +84,7 @@ module.exports = {
 
             //No User Found 
             if (!user) {
+                console.log('No User with that ID');
                 return res.status(404).json({message: 'No User with that ID'});
             }
 
@@ -110,6 +112,7 @@ module.exports = {
 
             //No User Found 
             if (!user) {
+                console.log('No User with that ID');
                 return res.status(404).json({message: 'No User with that ID'});
             }
 
