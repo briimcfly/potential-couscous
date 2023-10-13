@@ -1,6 +1,20 @@
 const mongoose = require('mongoose');
 
-const reactionSchema = require('./Reaction');
+//Reaction Schema 
+const reactionSchema = new mongoose.Schema({
+    reactionId: {
+
+    },
+    reactionBody: {
+
+    },
+    username: {
+
+    },
+    createdAt: {
+
+    }
+});
 
 //Thought Schema 
 const thoughtSchema = new mongoose.Schema({
