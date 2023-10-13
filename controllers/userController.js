@@ -19,7 +19,7 @@ module.exports = {
     //Get Single User
     async getSingleUser(req,res) {
         try{
-            const user = await User.findOne({_id: req.params.userId});
+            const user = await User.findById(req.params.userId);
 
             //No User Found 
             if (!user) {
@@ -54,8 +54,8 @@ module.exports = {
     //Update a Single User 
     async updateUser(req,res) {
         try {
-            const user = await User.findOneAndUpdate(
-                {_id: req.params.userId},
+            const user = await User.findByIdAndUpdate(
+                req.params.userId,
                 {$set: req.body},
                 {runValidators: true, new: true}
             )
@@ -78,7 +78,7 @@ module.exports = {
     //Delete a Single User 
     async deleteUser(req,res) {
         try {
-            const user = await User.findOneAndRemove({_id: req.params.userId});
+            const user = await User.findByIdAndRemove(req.params.userId);
 
             //No User Found 
             if (!user) {
@@ -90,7 +90,7 @@ module.exports = {
 
             //Return Success 
             console.log('User and associated thoughts deleted successfully');
-            res.status(200).json({message: 'User and associated thoughts deleted successfully'})
+            res.status(200).json(user)
 
         } catch(err) {
             //Error Handling
@@ -101,6 +101,20 @@ module.exports = {
     //Add Friend 
     async addFriend(req,res) {
         try {
+            const user = await User.findByIdAndUpdate(
+                req.params.userId,
+                {$addToSet: {friends: req.body.friendId}},
+                {runValidators: true, new: true}
+            )
+
+            //No User Found 
+            if (!user) {
+                return res.status(404).json({message: 'No User with that ID'});
+            }
+
+            //Return Success
+            console.log('Added Friend Successfully');
+            res.status(200).json(user)
 
         } catch(err) {
             //Error Handling 
