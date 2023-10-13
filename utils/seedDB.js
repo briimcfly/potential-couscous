@@ -3,13 +3,6 @@ const db = require('../config/connection');
 
 const { User, Thought } = require('../models');
 
-mongoose.connect(process.env.MONGODB_URI ||' mongodb://localhost:27017', {
-    //Mongoose, Use Mongo's new URL Parser
-    useNewUrlParser: true,
-    //Mongoose, Use Mongo's new Server Discover/Monitoring Engine
-    useUnifiedTopology: true
-});
-
 //User Seeds 
 const userData = [
     {
@@ -44,7 +37,7 @@ User.insertMany(userData)
             }
         ];
 
-        returnThought.insertMany(thoughtData);
+        return Thought.insertMany(thoughtData);
     })
     .then(() => {
         console.log('Data seeded!');
