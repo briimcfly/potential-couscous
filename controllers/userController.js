@@ -91,6 +91,31 @@ module.exports = {
             //Delete User's Thoughts 
             await Thought.deleteMany({username: user.user._id});
 
+            //Delete Orphaned Reactions 
+            const thoughts = await Thought.find();
+            //Loop through thoughts
+            for (let thought of thoughts) {
+                //Filter and store thoughts associated with deleted user
+                const deleteReactions = thought
+                .reactions
+                .filter(reaction =>
+                    //Compare User ID strings 
+                    reaction.userId.toString() === user._id.toString())
+                
+                //If reactions from user in current thought... 
+                if(deleteReactions.length) {
+                    //Remove reactions of Deleted User
+                    thought.reactions = thought
+                    .reactions
+                    .filter(reaction => 
+                        //Keep all other reactions
+                        reaction.userId.toString() !== user._id.toString());
+                        
+                    //Save the thought doc with updated reaction array
+                    await thought.save();
+                }
+            }
+
             //Return Success 
             console.log('User and associated thoughts deleted successfully');
             res.status(200).json(user)
