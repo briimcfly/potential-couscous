@@ -1,21 +1,36 @@
 const { User, Thought } = require('../models');
 
+//Success Handler
+function success(res, msg, pyld, code) {
+    console.log(msg);
+    res.status(code).json(pyld);
+}
+
+//Error Handler 
+function error(res, msg, err, code) {
+    if (err) {
+        console.log(msg, err);
+    } else {
+        console.log(msg);
+    }
+    res.status(code).json({message: msg});
+}
+
 module.exports = {
     //Get All Users 
     async getUsers(req,res) {
         try{
-            const users = await User.find().populate('friends').exec();
+            const users = await User.find().populate('friends');
 
             //Return Success
-            console.log('Returned All Users Successfuly');
-            res.status(200).json(users);
+            success(res, 'Returned All Users Successfully', users, 200);
 
         } catch(err) {
             //Error Handling
-            console.log('Error Getting All Users', err);
-            res.status(500).json({message: 'Error Getting All Users'});
+            error(res, 'Error Getting All Users', err, 500);
         }
     },
+
     //Get Single User
     async getSingleUser(req,res) {
         try{
@@ -23,35 +38,32 @@ module.exports = {
 
             //No User Found 
             if (!user) {
-                console.log('No User with that ID');
-                return res.status(404).json({message: 'No User with that ID'});
+                error(res, 'No User with that ID', null, 404);
             }
 
             //Return Success
-            console.log('Returned Single User Successfully');
-            res.status(200).json(user);
+            success(res, 'Returned Single User Successfully', user, 200);
 
         } catch(err) {
             //Error Handling
-            console.log('Error Getting Single User', err);
-            res.status(500).json({message: 'Error Getting Single User'});
+            error(res, 'Error Getting Single User', err, 500);
         }
     },
+
     //Create New User
     async createUser(req,res) {
         try {
             const user = await User.create(req.body);
 
             //Return Success
-            console.log('User Created Successfully')
-            res.status(200).json(user);
+            success(res, 'User Created Successfully', user, 201);
 
         } catch (err) {
             //Error Handling
-            console.log('Error Creating a User', err);
-            res.status(500).json({message: 'Error Creating a User'});
+            error(res, 'Error Creating a User', err, 500);
         }
     },
+
     //Update a Single User 
     async updateUser(req,res) {
         try {
@@ -63,20 +75,18 @@ module.exports = {
 
             //No User Found 
             if (!user) {
-                console.log('No User with that ID');
-                return res.status(404).json({message: 'No User with that ID'});
+                return error(res, 'No User with that ID', null, 404);
             }
 
             //Return Success
-            console.log('User Successfuly Updated');
-            res.status(200).json(user);
+            success(res, 'User Successfuly Updated', user, 200);
 
         } catch(err) {
             //Error Handling 
-            console.log('Error Updating User', err);
-            res.status(500).json({message: 'Error Updating a User'});
+            error(res, 'Error Updating a User', err, 500);
         }
     },
+
     //Delete a Single User 
     async deleteUser(req,res) {
         try {
@@ -85,12 +95,11 @@ module.exports = {
 
             //No User Found 
             if (!user) {
-                console.log('No User with that ID');
-                return res.status(404).json({message: 'No User with that ID'});
+                return error(res, 'No User with that ID', null, 404);
             }
 
             //Delete User's Thoughts 
-            await Thought.deleteMany({username: user._id});
+            await Thought.deleteMany({userId: user._id});
 
             //Delete Orphaned Reactions 
             const thoughts = await Thought.find();
@@ -121,13 +130,11 @@ module.exports = {
             await User.findByIdAndDelete(req.params.userId);
 
             //Return Success 
-            console.log('User, along with their associated Thoughts and Reactions deleted successfully');
-            res.status(200).json(user)
+            success(res, 'User, along with their associated Thoughts and Reactions deleted successfully', user, 200);
 
         } catch(err) {
             //Error Handling
-            console.log('Error Deleting a User', err);
-            res.status(500).json({message: 'Error Deleting a User'});
+            error(res, 'Error Deleting a User', err, 500);
         }
     },
     //Add Friend 
@@ -141,18 +148,15 @@ module.exports = {
 
             //No User Found 
             if (!user) {
-                console.log('No User with that ID');
-                return res.status(404).json({message: 'No User with that ID'});
+                return error(res, 'No User with that ID', null, 404);
             }
 
             //Return Success
-            console.log('Added Friend Successfully');
-            res.status(200).json(user)
+            success(res, 'Added Friend Successfully', user, 200);
 
         } catch(err) {
             //Error Handling 
-            console.log('Error Adding Friend', err);
-            res.status(500).json({message: 'Error Adding Friend'});
+            error(res, 'Error Adding Friend', err, 500);
         }
     },
     //Remove Friend 
@@ -166,18 +170,16 @@ module.exports = {
 
             //No User Found 
             if (!user) {
-                return res.status(404).json({message: 'No User with that ID'});
+                return error(res, 'No User with that ID', null, 404);
             }
 
             //Return Success
-            console.log('Removed Friend Successfully');
-            res.status(200).json(user)
+            success(res, 'Removed Friend Successfully', user, 200);
 
 
         } catch(err) {
             //Error Handling 
-            console.log('Error Removing Friend', err);
-            res.status(500).json({message: 'Error Removing Friend'});
+            error(res, 'Error Removing Friend', err, 500);
         }
     }
 };
