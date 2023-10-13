@@ -24,11 +24,16 @@ const userSchema = Schema({
     ],
     friends: [
         {
-            type: Schema.Types,ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'User'
         }
     ]
 });
+
+//friendCount virtual
+userSchema.virtual('friendCount').get(function() {
+    return this.friends.length;
+})
 
 const User = mongoose.model('User', userSchema);
 
