@@ -25,6 +25,10 @@ const thoughtSchema = new mongoose.Schema({
     ]
 })
 
+//Enable getters when documents are queried 
+thoughtSchema.set('toObject', {getters: true});
+thoughtSchema.set('toJSON', { getters: true});
+
 const Thought = mongoose.model('Thoughts', thoughtSchema);
 
 module.exports = Thought;
