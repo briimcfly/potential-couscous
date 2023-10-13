@@ -36,5 +36,20 @@ module.exports = {
             console.log('Error Getting All Thoughts', err);
             res.status(500).json({message: 'Error Getting All Thoughts'});
         }
+    },
+    //Create a Thought
+    async createThought(req,res) {
+        try {
+            const thought = await Thought.create(req,body);
+
+            //Return Success
+            console.log('Thought Created Successfully');
+            res.status(200).json(thought);
+
+        } catch(err) {
+            //Error Handling
+            console.log('Error Creating Thought', err);
+            res.status(500).json({message: 'Error Creating Thought'});
+        }
     }
 }
