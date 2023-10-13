@@ -4,7 +4,7 @@ module.exports = {
     //Get All Users 
     async getUsers(req,res) {
         try{
-            const users = await User.find();
+            const users = await User.find().populate('friends').exec();
 
             //Return Success
             console.log('Returned All Users Successfuly');
@@ -80,6 +80,7 @@ module.exports = {
     //Delete a Single User 
     async deleteUser(req,res) {
         try {
+            //Find the User by ID
             const user = await User.findById(req.params.userId);
 
             //No User Found 
@@ -116,6 +117,7 @@ module.exports = {
                 }
             }
 
+            //Delete User
             await User.findByIdAndDelete(req.params.userId);
 
             //Return Success 
@@ -158,7 +160,7 @@ module.exports = {
         try{
             const user = await User.findByIdAndUpdate(
                 req.params.userId,
-                {$pull: {friends: req.params.friendId}},
+                {$pull: {friends: req.body.friendId}},
                 {new: true}
             );
 
