@@ -89,7 +89,7 @@ module.exports = {
             }
 
             //Delete User's Thoughts 
-            await Thought.deleteMany({username: user.username});
+            await Thought.deleteMany({username: user.user._id});
 
             //Return Success 
             console.log('User and associated thoughts deleted successfully');
