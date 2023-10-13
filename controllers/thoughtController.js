@@ -64,5 +64,30 @@ module.exports = {
             console.log('Error Creating Thought', err);
             res.status(500).json({message: 'Error Creating Thought'});
         }
+    },
+    //Update a Thought
+    async updateThought(req,res){
+        try{
+            const thought = await Thought.findByIdAndUpdate(
+                req.params.userId,
+                {$set: req.body},
+                {runValidators: true, new:true}
+            )
+
+            //No Thought Found
+            if (!thought) {
+                console.log('No Thought with that ID');
+                return res.status(404).json({message: 'No Thought with that ID'});
+            }
+
+            //Return Success
+            console.log('Thought Updated Successfully');
+            res.status(200).json(thought);
+            
+        } catch(err) {
+            //Error Handling
+            console.log('Error Updating Thought', err);
+            res.status(500).json({message: 'Error Updating Thought'});
+        }
     }
 }
