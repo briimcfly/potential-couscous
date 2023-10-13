@@ -80,7 +80,7 @@ module.exports = {
     //Delete a Single User 
     async deleteUser(req,res) {
         try {
-            const user = await User.findByIdAndDelete(req.params.userId);
+            const user = await User.findById(req.params.userId);
 
             //No User Found 
             if (!user) {
@@ -89,7 +89,7 @@ module.exports = {
             }
 
             //Delete User's Thoughts 
-            await Thought.deleteMany({username: user.user._id});
+            await Thought.deleteMany({username: user._id});
 
             //Delete Orphaned Reactions 
             const thoughts = await Thought.find();
@@ -116,8 +116,10 @@ module.exports = {
                 }
             }
 
+            await User.findByIdAndDelete(req.params.userId);
+
             //Return Success 
-            console.log('User and associated thoughts deleted successfully');
+            console.log('User, along with their associated Thoughts and Reactions deleted successfully');
             res.status(200).json(user)
 
         } catch(err) {

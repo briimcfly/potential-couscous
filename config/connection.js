@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 //Local DB Connection 
-mongoose.connect('mongodb://localhost:27017/yourDBname', { 
+mongoose.connect('mongodb://localhost:27017/socialDB', { 
     //Mongoose, Use Mongo's new URL Parser
     useNewUrlParser: true,
     //Mongoose, Use Mongo's new Server Discover/Monitoring Engine
