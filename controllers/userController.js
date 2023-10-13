@@ -23,10 +23,11 @@ module.exports = {
 
             //No User Found 
             if (!user) {
+                console.log('No User with that ID');
                 return res.status(404).json({message: 'No User with that ID'});
             }
 
-            //Return Single User
+            //Return Success
             console.log('Returned Single User Successfully');
             res.status(200).json(user);
 
@@ -147,4 +148,4 @@ module.exports = {
             res.status(500).json({message: 'Error Removing Friend'});
         }
     }
-}
+};
