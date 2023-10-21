@@ -28,6 +28,11 @@ const userSchema = Schema({
             ref: 'User'
         }
     ]
+},
+{
+    toJSON: {
+        versionKey:false
+    }
 });
 
 //friendCount virtual

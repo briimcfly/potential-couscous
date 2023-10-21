@@ -13,14 +13,14 @@ const {
 // /api/thoughts
 router.route('/').get(getThoughts).post(createThought);
 
-// /api/users/:thoughtId
+// /api/thoughts/:thoughtId
 router
     .route('/:thoughtId')
     .get(getSingleThought)
     .put(updateThought)
     .delete(deleteThought)
 
-// /api/users/:thoughtId/reactions/:reactionId
+// /api/thoughts/:thoughtId/reactions/:reactionId
 router
     .route('/:thoughtId/reactions/reactionId')
     .post(addReaction)

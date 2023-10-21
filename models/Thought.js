@@ -58,7 +58,8 @@ const thoughtSchema = new Schema({
     //Include virtuals when converting to JSON
     toJSON: {
         virtuals: true,
-        getters: true
+        getters: true,
+        versionKey: false
     },
     //Include virtuals when converting to Objects
     toObject: {
