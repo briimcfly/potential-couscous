@@ -1,7 +1,8 @@
+//Models
 const { User, Thought } = require('../models');
 
+//Success/Error Helpers
 const { error, success } = require('../utils/helper');
-
 
 module.exports = {
     
