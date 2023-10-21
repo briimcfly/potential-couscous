@@ -1,5 +1,21 @@
 const { Thought, User } = require('../models');
 
+//Success Handler
+function success(res, msg, pyld, code) {
+    console.log(msg);
+    res.status(code).json(pyld);
+}
+
+//Error Handler 
+function error(res, msg, err, code) {
+    if (err) {
+        console.log(msg, err);
+    } else {
+        console.log(msg);
+    }
+    res.status(code).json({message: msg});
+}
+
 module.exports = {
     //Get All Thoughts
     async getThoughts(req,res) {
@@ -112,7 +128,7 @@ module.exports = {
 
             //Return Success
             console.log('Thought Deleted Successfully');
-            res.status(200).json(thought);
+            res.status(200).json({message: "Successfully Deleted Thought"});
 
         } catch(err) {
             //Error Handling
@@ -123,17 +139,28 @@ module.exports = {
     //Add a Reaction 
     async addReaction(req,res) {
         try{
+            //find the associated User ID 
+            const user = await User.findOne({username: req.body.username});
+
+            //No User
+            if (!user) {error(res, 'No User with that ID', null, 404);}
+
+            //Create Reaction object 
+            const reaction  = {
+                reactionBody: req.body.reactionBody,
+                username: req.body.username,
+                userId: user._id
+            }
+
+            //Find the Thought to React to 
             const thought = await Thought.findByIdAndUpdate(
                 req.params.thoughtId,
-                {$push: {reactions: req.body}},
+                {$push: {reactions: reaction}},
                 {runValidators: true, new:true}
             )
             
             //No Thought Found
-            if (!thought) {
-                console.log('No Thought with that ID');
-                return res.status(404).json({message: 'No Thought with that ID'});
-            }
+            if (!thought) {error(res, 'No Thought with that ID', null, 404);}
 
             //Return Success
             console.log('Reaction Added Successfully');

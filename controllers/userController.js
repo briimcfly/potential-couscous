@@ -22,7 +22,7 @@ module.exports = {
     //Get All Users 
     async getUsers(req,res) {
         try{
-            const users = await User.find().populate('friends');
+            const users = await User.find();
 
             //Return Success
             success(res, 'Returned All Users Successfully', users, 200);
