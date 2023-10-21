@@ -36,12 +36,7 @@ module.exports = {
     //Get Single User
     async getSingleUser(req,res) {
         try{
-            const user = await User.findById(req.params.userId)
-            .populate('friends')
-            .populate({
-                path: 'friends',
-                select: '_id'
-            })
+            const user = await User.findById(req.params.userId);
 
             //No User Found 
             if (!user) {
