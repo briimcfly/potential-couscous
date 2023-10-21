@@ -1,59 +1,48 @@
+//Models
 const { Thought, User } = require('../models');
 
-//Success Handler
-function success(res, msg, pyld, code) {
-    console.log(msg);
-    res.status(code).json(pyld);
-}
-
-//Error Handler 
-function error(res, msg, err, code) {
-    if (err) {
-        console.log(msg, err);
-    } else {
-        console.log(msg);
-    }
-    res.status(code).json({message: msg});
-}
+//Success/Error Helpers 
+const { error, success } = require('../utils/helper');
 
 module.exports = {
-    //Get All Thoughts
+
+    // THOUGHTS
+    // GET
+    // ALL
+
     async getThoughts(req,res) {
         try{
+            //Find Thoughts
             const thoughts = await Thought.find();
 
             //Return Success
-            console.log('Returned All Thoughts Successfuly');
-            res.status(200).json(thoughts);   
+            success(res, 'Returned All Thoughts Successfuly', thoughts, 200);
 
-        } catch(err) {
-            //Error Handling
-            console.log('Error Getting All Thoughts', err);
-            res.status(500).json({message: 'Error Getting All Thoughts'});
-        }
+        } catch(err) { error(res, 'Error Getting All Thoughts', err, 500); }
     },
-    //Get Single Thought
+
+    // THOUGHTS
+    // GET
+    // ONE
+
     async getSingleThought(req,res) {
         try {
+            //Find Thought by ID
             const thought = await Thought.findById(req.params.thoughtId);
 
             //No Thought Found
-            if (!thought) {
-                console.log('No Thought with that ID');
-                return res.status(404).json({message: 'No Thought with that ID'});
-            }
+            if (!thought) {error(res, 'No Thought with that ID', null, 404)};
 
             //Return Success
-            console.log('Single Thought Returned Successfully');
-            res.status(200).json(thought);
+            success(res,'Single Thought Returned Successfully', thought,200);
 
-        } catch(err) {
-            //Error Handling
-            console.log('Error Getting All Thoughts', err);
-            res.status(500).json({message: 'Error Getting All Thoughts'});
-        }
+        } catch(err) { error(res, 'Error Getting Single Thought', err, 500)};
     },
-    //Create a Thought
+
+    // THOUGHTS
+    // CREATE
+    // ONE
+
     async createThought(req,res) {
         try {
             const thought = await Thought.create(req.body);
@@ -66,22 +55,18 @@ module.exports = {
             );
 
             //No User Found 
-            if (!user){
-                console.log('No User with that Username');
-                return res.status(404).json({message: 'No User with that Username'})
-            }
+            if (!user) {error(res, 'No User with that Username', null, 404)};
 
             //Return Success
-            console.log('Thought Created and Added to User Successfully');
-            res.status(200).json(thought);
+            success(res,'Thought Created and Added to User Successfully', thought, 200);
 
-        } catch(err) {
-            //Error Handling
-            console.log('Error Creating Thought', err);
-            res.status(500).json({message: 'Error Creating Thought'});
-        }
+        } catch(err) { error(res, 'Error Creating Thought', err, 500)};
     },
-    //Update a Thought
+
+    // THOUGHTS
+    // UPDATE
+    // ONE
+
     async updateThought(req,res){
         try{
             const thought = await Thought.findByIdAndUpdate(
@@ -91,34 +76,27 @@ module.exports = {
             )
 
             //No Thought Found
-            if (!thought) {
-                console.log('No Thought with that ID');
-                return res.status(404).json({message: 'No Thought with that ID'});
-            }
+            if (!thought) { error(res, 'No Thought with that ID', null, 404)};
 
             //Return Success
-            console.log('Thought Updated Successfully');
-            res.status(200).json(thought);
+            success(res, 'Thought Updated Successfully', thought, 200);
             
-        } catch(err) {
-            //Error Handling
-            console.log('Error Updating Thought', err);
-            res.status(500).json({message: 'Error Updating Thought'});
-        }
+        } catch(err) {error(res, 'Error Updating Thought', err, 500)};
     },
-    //Delete a Thought 
+
+    // THOUGHTS
+    // DELETE
+    // ONE
+
     async deleteThought(req,res) {
         try{
             const thought = await Thought.findById(req.params.thoughtId);
 
             //No Thought Found
-            if (!thought) {
-                console.log('No Thought with that ID');
-                return res.status(404).json({message: 'No Thought with that ID'});
-            }
+            if (!thought) { error(res, 'No Thought with that ID', null, 404)};
 
             //Remove Thought from User's Thoughts 
-            const user = await User.findByIdAndUpdate(
+            await User.findByIdAndUpdate(
                 thought.userId,
                 {$pull: {thoughts: thought._id}}
             );
@@ -127,16 +105,15 @@ module.exports = {
             await Thought.findByIdAndDelete(req.params.thoughtId);
 
             //Return Success
-            console.log('Thought Deleted Successfully');
-            res.status(200).json({message: "Successfully Deleted Thought"});
+            success(res, 'Thought Deleted Successfully', {message: "Successfully Deleted Thought"}, 200);
 
-        } catch(err) {
-            //Error Handling
-            console.log('Error Deleting Thought', err);
-            res.status(500).json({message: 'Error Deleting Thought'});
-        }
+        } catch(err) { error(res,'Error Deleting Thoughts', err, 500)};
     },
-    //Add a Reaction 
+    
+    // REACTIONS
+    // CREATE
+    // ONE
+
     async addReaction(req,res) {
         try{
             //find the associated User ID 
@@ -163,16 +140,15 @@ module.exports = {
             if (!thought) {error(res, 'No Thought with that ID', null, 404);}
 
             //Return Success
-            console.log('Reaction Added Successfully');
-            res.status(200).json(thought);
+            success(res,'Reaction Added Successfully', thought, 200);
 
-        }  catch(err) {
-            //Error Handling
-            console.log('Error Adding Reaction', err);
-            res.status(500).json({message: 'Error Adding Reaction'});
-        }
+        }  catch(err) {error(res, 'Error Adding Reaction', err, 500)};
     },
-    //Delete a Reaction 
+
+    // REACTIONS
+    // DELETE
+    // ONE 
+
     async deleteReaction(req,res) {
         try{
             const thought = await Thought.findByIdAndUpdate(
@@ -182,19 +158,11 @@ module.exports = {
             );
 
             //No Thought Found
-            if (!thought) {
-                console.log('No Thought with that ID');
-                return res.status(404).json({message: 'No Thought with that ID'});
-            }
+            if(!thought){return error(res,'No Thought with that ID',null,404)};
 
             //Return Success
-            console.log('Reaction Deleted Successfully');
-            res.status(200).json(thought);
+            success(res,'Reaction Deleted Successfully',thought,200);
 
-        }  catch(err) {
-            //Error Handling
-            console.log('Error Deleting Reaction', err);
-            res.status(500).json({message: 'Error Deleting Reaction'});
-        }
+        }  catch(err){error(res,'Error Deleting Reaction',err,500)};
     }
 }
