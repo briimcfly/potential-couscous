@@ -16,6 +16,8 @@ function error(res, msg, err, code) {
     res.status(code).json({message: msg});
 }
 
+console.log('this is a test');
+
 module.exports = {
     //Get All Users 
     async getUsers(req,res) {
@@ -34,7 +36,12 @@ module.exports = {
     //Get Single User
     async getSingleUser(req,res) {
         try{
-            const user = await User.findById(req.params.userId).populate('friends');
+            const user = await User.findById(req.params.userId)
+            .populate('friends')
+            .populate({
+                path: 'friends',
+                select: '_id'
+            })
 
             //No User Found 
             if (!user) {
