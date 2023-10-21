@@ -45,10 +45,21 @@ module.exports = {
 
     async createThought(req,res) {
         try {
-            const thought = await Thought.create(req.body);
+            const user = await User.findOne({username: req.body.username});
+
+            //No User Found 
+            if (!user) {error(res, 'No User with that Username', null, 404)};
+
+            const incomingThought = {
+                thoughtText: req.body.thoughtText,
+                username: req.body.username,
+                userId: user._id
+            }
+
+            const thought = await Thought.create(incomingThought);
 
             //Push thought to user 
-            const user = await User.findByIdAndUpdate(
+            await User.findByIdAndUpdate(
                 req.body.userId,
                 {$push: {thoughts: thought._id}},
                 {runValidators:true, new:true}
